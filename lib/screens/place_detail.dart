@@ -1,4 +1,6 @@
 import 'package:favorite_places/models/place.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PlaceDetailScreen extends StatelessWidget {
@@ -8,6 +10,18 @@ class PlaceDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget mem =Column(
+      children: [
+        Text("Memories : ${place.memory}",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),
+        ),
+        const SizedBox(height: 10,),
+      ],
+    );
+    if(place.memory.isEmpty){
+      mem=const SizedBox(height: 2,);
+    };
     return Scaffold(
       appBar: AppBar(
         title: Text(place.title),
@@ -47,12 +61,10 @@ class PlaceDetailScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),
                         ),
-                        const SizedBox(height: 2,),
-                        Text("Memories : ${place.memory}",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),
-                        ),
-                        const SizedBox(height: 10,),
+
+                        mem,
+
+
                         Text(place.location.address,
                         textAlign: TextAlign.center,
                         style: Theme
