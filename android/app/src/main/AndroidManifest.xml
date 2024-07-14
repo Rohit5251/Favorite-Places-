@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <application
+    <application>
     <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyA0CKDFl9Qg4WuDPLslph39BDHH1_z5psI"/>
         android:label="favorite_places"

@@ -20,6 +20,59 @@ class PlaceDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Container(
+                    alignment:Alignment.center,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 24
+                    ),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Colors.transparent,
+                        Colors.black54,
+                      ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      )
+                    ),
+                    child: Column(
+                      children: [
+                        Text("Location Name : ${place.title}",
+                        textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),
+                        ),
+                        const SizedBox(height: 2,),
+                        Text("Memories : ${place.memory}",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onBackground),
+                        ),
+                        const SizedBox(height: 10,),
+                        Text(place.location.address,
+                        textAlign: TextAlign.center,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .onBackground,
+                        ),
+                                          ),
+                        const SizedBox(height: 30,)
+                      ],
+                    )
+                  )
+                ],
+              )
+          )
         ],
       )
     );
