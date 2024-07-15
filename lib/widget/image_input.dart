@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
-  const ImageInput({super.key,required this.onPickedImage});
+  ImageInput({super.key,required this.onPickedImage,required this.onSelectDate});
 
   final void Function (File image) onPickedImage;
+  final void Function (String date) onSelectDate;
 
   @override
   State<ImageInput> createState() {
@@ -15,6 +16,7 @@ class ImageInput extends StatefulWidget {
 
 class _ImageInput extends State<ImageInput> {
   File? _selectedImage;
+  String _datetime="no data";
 
   void _takePicture() async {
     final imagePicker = ImagePicker();
@@ -22,14 +24,18 @@ class _ImageInput extends State<ImageInput> {
       source: ImageSource.camera,
       maxWidth: 600,
     );
+    _datetime =  DateTime.now().toString();
     if (pickedImage == null) {
       return;
     }
     setState(() {
       _selectedImage = File(pickedImage.path);
+
     });
 
     widget.onPickedImage(_selectedImage!);
+    widget.onSelectDate(_datetime);
+    print(_datetime);
   }
 
   @override

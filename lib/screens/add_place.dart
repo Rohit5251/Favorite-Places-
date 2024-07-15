@@ -1,3 +1,5 @@
+
+
 import 'package:favorite_places/models/place.dart';
 import 'package:favorite_places/providers/user_place.dart';
 import 'package:favorite_places/widget/image_input.dart';
@@ -17,11 +19,16 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
   final _memoryController =TextEditingController();
   File? _selectedImage;
+  String? _selectedDate;
   PlaceLocation? _selectedLocation;
 
   void _selectImage(File pickedImage) {
     _selectedImage = pickedImage;
   }
+  void _dateSelect(String dateTime ){
+    _selectedDate=dateTime;
+  }
+
 
   void _savePlace() {
     final enteredText = _titleController.text;
@@ -34,7 +41,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBarx);
     }
 
-    ref.read(userPlacesProvider.notifier).addPlace(enteredText, enteredMemory ,_selectedImage!,_selectedLocation!);
+    ref.read(userPlacesProvider.notifier).addPlace(enteredText, enteredMemory ,_selectedImage!,_selectedLocation!,_selectedDate!);
 
     Navigator.of(context).pop();
   }
@@ -57,7 +64,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
         child: Column(
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: "Title"),
+              decoration: const InputDecoration(labelText: "Name of Location"),
               controller: _titleController,
               style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
             ),
@@ -71,6 +78,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             // Image input
             ImageInput(
               onPickedImage: _selectImage,
+              onSelectDate: _dateSelect,
             ),
             const SizedBox(height: 10,),
             LocationInput(

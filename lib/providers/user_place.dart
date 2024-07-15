@@ -7,12 +7,12 @@ import 'dart:io';
 class UserPlacesNotifier extends StateNotifier<List<Place>>{
   UserPlacesNotifier() : super(const []);
 
-  void addPlace(String title,String memory,File image,PlaceLocation location)async {
+  void addPlace(String title,String memory,File image,PlaceLocation location, String dateTime)async {
     final appDir=await syspaths.getApplicationSupportDirectory();
     final filename=path.basename(image.path);
     final copiedImage=await image.copy('${appDir.path}/$filename');
 
-    final newPlace=Place(title: title,image: copiedImage,location: location, memory: memory);
+    final newPlace=Place(title: title,image: copiedImage,location: location, memory: memory,dateTime:dateTime);
     state =[newPlace,...state];
   }
 }

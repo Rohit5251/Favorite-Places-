@@ -15,7 +15,8 @@ class Place{
       {required this.title,
         required this.memory,
         required this.image,
-        required this.location
+        required this.location,
+        required this.dateTime,
       }) : id =uuid.v4();
 
   final String id;
@@ -23,4 +24,5 @@ class Place{
   final String memory;
   final File image;
   final PlaceLocation location;
+  final String dateTime;
 }
