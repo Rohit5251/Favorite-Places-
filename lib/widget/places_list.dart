@@ -1,16 +1,65 @@
-import 'package:favorite_places/screens/place_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:favorite_places/models/place.dart';
+import 'package:favorite_places/screens/place_detail.dart';
 
-class PlacesList extends StatelessWidget {
+class PlacesList extends StatefulWidget {
   const PlacesList({super.key, required this.places, required this.onRemovePlace});
 
   final List<Place> places;
-  final void Function(int) onRemovePlace;
+  final Function(String id) onRemovePlace;
+
+  @override
+  _PlacesListState createState() => _PlacesListState();
+}
+
+class _PlacesListState extends State<PlacesList> {
+  late List<Place> _places;
+  Place? _recentlyRemovedPlace;
+  int? _recentlyRemovedPlaceIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _places = widget.places;
+  }
+
+  @override
+  void didUpdateWidget(covariant PlacesList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.places != widget.places) {
+      setState(() {
+        _places = widget.places;
+      });
+    }
+  }
+
+  void _removePlace(int index) {
+    setState(() {
+      _recentlyRemovedPlace = _places[index];
+      _recentlyRemovedPlaceIndex = index;
+      _places.removeAt(index);
+    });
+
+    widget.onRemovePlace(_recentlyRemovedPlace!.id);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Place removed'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _places.insert(_recentlyRemovedPlaceIndex!, _recentlyRemovedPlace!);
+            });
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (places.isEmpty) {
+    if (_places.isEmpty) {
       return Center(
         child: Text(
           "No places added yet",
@@ -22,32 +71,36 @@ class PlacesList extends StatelessWidget {
     }
 
     return ListView.builder(
-      itemCount: places.length,
+      itemCount: _places.length,
       itemBuilder: (ctx, index) => Dismissible(
-        key: ValueKey(places[index].id),
-        direction: DismissDirection.endToStart,
+        key: ValueKey(_places[index].id),
         background: Container(
-          color: Theme.of(context).colorScheme.error,
+          color: Theme.of(context).errorColor,
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: 20),
-          child: const Icon(Icons.delete, color: Colors.white, size: 30),
+          child: const Icon(
+            Icons.delete,
+            color: Colors.white,
+            size: 40,
+          ),
         ),
+        direction: DismissDirection.endToStart,
         onDismissed: (direction) {
-          onRemovePlace(index);
+          _removePlace(index);
         },
         child: ListTile(
           leading: CircleAvatar(
             radius: 26,
-            backgroundImage: FileImage(places[index].image),
+            backgroundImage: FileImage(_places[index].image),
           ),
           title: Text(
-            places[index].title,
+            _places[index].title,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Theme.of(context).colorScheme.onBackground,
             ),
           ),
           subtitle: Text(
-            places[index].location.address,
+            _places[index].location.address,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: Theme.of(context).colorScheme.onBackground,
             ),
@@ -55,7 +108,7 @@ class PlacesList extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => PlaceDetailScreen(place: places[index]),
+                builder: (ctx) => PlaceDetailScreen(place: _places[index]),
               ),
             );
           },
