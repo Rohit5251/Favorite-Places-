@@ -15,32 +15,43 @@ class PlacesScreen extends ConsumerStatefulWidget {
 
 class _PlacesScreenState extends ConsumerState<PlacesScreen> {
   Place? _lastRemovedPlace;
-  int? _lastRemovedIndex;
+  String? _lastRemovedId;
 
-  void _removePlace(int index) {
+  void _removePlace(String id) async {
     final userPlacesNotifier = ref.read(userPlacesProvider.notifier);
-    _lastRemovedPlace = ref.read(userPlacesProvider)[index];
-    _lastRemovedIndex = index;
-    userPlacesNotifier.removePlace(index);
+    _lastRemovedPlace = ref.read(userPlacesProvider).firstWhere((place) => place.id == id);
+    _lastRemovedId = id;
+    await userPlacesNotifier.removePlace(id);
+
+    setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${_lastRemovedPlace!.title} dismissed'),
         action: SnackBarAction(
           label: 'UNDO',
-          onPressed: () {
-            userPlacesNotifier.addPlace(
+          onPressed: () async {
+            await userPlacesNotifier.addPlace(
               _lastRemovedPlace!.title,
               _lastRemovedPlace!.memory,
               _lastRemovedPlace!.image,
               _lastRemovedPlace!.location,
               _lastRemovedPlace!.dateTime,
-              index: _lastRemovedIndex,
             );
+
+            setState(() {});
           },
         ),
       ),
     );
+  }
+
+  late Future<void> _placesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _placesFuture = ref.read(userPlacesProvider.notifier).loadPlaces();
   }
 
   @override
@@ -63,9 +74,20 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: PlacesList(
-          places: userPlaces,
-          onRemovePlace: _removePlace,
+        child: FutureBuilder(
+          future: _placesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return PlacesList(
+                places: userPlaces,
+                onRemovePlace: _removePlace,
+              );
+            }
+          },
         ),
       ),
     );
